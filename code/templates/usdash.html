@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>KLlibrary</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <style>
+    body {
+      background: #f5f5f5;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    .navbar-custom {
+      background-color: #2383e4;
+    }
+
+    .navbar-custom .btn-link {
+      color: #ffffff;
+    }
+
+    .navbar-custom .btn-link:hover {
+      color: #ffcc00;
+    }
+
+    .container {
+      margin-top: 20px;
+    }
+
+    .input-group .form-control {
+      border-radius: 0.25rem;
+      margin-right: 10px;
+    }
+
+    .btn-outline-secondary {
+      border-color: #2d7aad;
+      color: #317ed4;
+    }
+
+    .btn-outline-secondary:hover {
+      background-color: #3694ce;
+      color: #386591;
+    }
+
+    .dropdown-menu {
+      background-color: #32465a;
+    }
+
+    .dropdown-item {
+      color: #ffffff;
+    }
+
+    .dropdown-item:hover {
+      background-color: #ffcc00;
+      color: #32465a;
+    }
+
+    .book {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      height: 260px;
+      text-align: center;
+      background: #79a00e;
+      color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-success {
+      background-color: #ffcc00;
+      border-color: #ffcc00;
+      color: #32465a;
+    }
+
+    .btn-success:hover {
+      background-color: #e6b800;
+      border-color: #e6b800;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"> {% raw %}
+    <h1><b>{{ username }} Dashboard</b></h1>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+      <div class="container-fluid">
+        <form class="d-flex" method="POST" :action="'/user_dashboard/' + username">
+          <a :href="'/' + username + '/profile'" class="btn btn-link"><h5>Profile</h5></a> <b>|</b>
+          <a :href="'/user_dashboard/' + username + '/mybook'" class="btn btn-link"><h5>myBooks</h5></a> <b>|</b>
+          <a :href="'/user_dashboard/' + username" class="btn btn-link"><h5>GoBack</h5></a> <b>|</b>
+          <a href="/userlogin" class="btn btn-link"><h5>Logout</h5></a>
+        </form>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="searchQuery" placeholder="Search the required" name="name" />
+            <div class="input-group-append">
+              <button @click.prevent="submitSearch" class="btn btn-outline-secondary" type="button">Search</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="dropdown">
+            <button class="btn btn-info dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown">
+              ToSearch
+            </button>
+            <ul class="dropdown-menu">
+              <label class="dropdown-item">
+                <input type="radio" v-model="searchType" value="Section" /> Section
+              </label>
+              <label class="dropdown-item">
+                <input type="radio" v-model="searchType" value="Author" /> Author
+              </label>
+              <label class="dropdown-item">
+                <input type="radio" v-model="searchType" value="E-Book" /> E-Book
+              </label>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+       
+        <div class="col-md-3" v-for="book in books" :key="book[3]">
+          <div class="book">
+            <h5 class="card-title">{{ book[2] }}</h5>
+            <h6>{{ book[0] }}</h6>
+            <p>{{ book[1] }}</p>
+            <p><b>Price:</b> ${{ book[4] }}<br><b>Rating:</b> {{ book[5] }}</p>
+            <form method="POST" :action="'/user_dashboard/' + username">
+              <button type="submit" class="btn btn-success" name="book" :value="book[3]">Request</button>
+            </form>
+          </div>
+        </div>
+        {% endraw %}
+      </div>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        username: '{{ a }}',
+        searchQuery: '',
+        searchType: '',
+        books: {{ k | tojson }}
+      },
+      methods: {
+        submitSearch() {
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = `/user_dashboard/${this.username}`;
+
+          const inputQuery = document.createElement('input');
+          inputQuery.type = 'hidden';
+          inputQuery.name = 'name';
+          inputQuery.value = this.searchQuery;
+          form.appendChild(inputQuery);
+
+          const inputType = document.createElement('input');
+          inputType.type = 'hidden';
+          inputType.name = 'search';
+          inputType.value = this.searchType;
+          form.appendChild(inputType);
+
+          const inputSearch = document.createElement('input');
+          inputSearch.type = 'hidden';
+          inputSearch.name = 'same';
+          inputSearch.value = 'search1';
+          form.appendChild(inputSearch);
+
+          document.body.appendChild(form);
+          form.submit();
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

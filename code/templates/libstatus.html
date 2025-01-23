@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KLlibrary</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f5f5f5;
+      font-family: 'Arial', sans-serif;
+    }
+    .navbar-custom {
+      background-color: #007bff;
+      color: #fff;
+      padding: 15px;
+      margin-bottom: 30px;
+    }
+    .navbar-custom .btn-link {
+      color: #fff;
+      font-weight: bold;
+    }
+    .navbar-custom .btn-link:hover {
+      color: #ffcc00;
+    }
+    h1, h3 {
+      text-align: center;
+      margin: 20px 0;
+      color: #333;
+    }
+    .container {
+      margin-bottom: 30px;
+    }
+    .requested-book {
+      background-color: #a1d7dc; 
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      height: 300px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .revoke-book {
+      background-color: #e1aaad; 
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      height: 250px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .requested-book:hover, .revoke-book:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .book .card-title {
+      font-size: 1.25rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .book .btn {
+      margin: 5px 0;
+      width: 100px;
+    }
+    .book .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+    .book .btn-success:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+    .book .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+    .book .btn-danger:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+    .book .btn-link {
+      color: #007bff;
+      font-size: 1rem;
+    }
+    .book .btn-link:hover {
+      color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="navbar-custom">
+      <div class="container-fluid d-flex justify-content-between">
+        <h1 class="m-0"><b>Librarian Dashboard</b></h1>
+        <div>
+          <form method="POST" action='/librarian_dashboard/status' class="d-inline">
+            <a href='/librarian_dashboard' class="btn btn-link"><h5 class="d-inline m-0">GoBack</h5></a> 
+            <b>|</b>
+            <a href="/" class="btn btn-link"><h5 class="d-inline m-0">Logout</h5></a>
+          </form>
+        </div>
+      </div>
+    </div>
+{% raw %}
+    <div class="container">
+      <h3><b>Requested Books</b></h3>
+      <div class="row">
+        <div v-for="item in k1" class="col-md-3 col-sm-6 mb-4">
+          <div class="book requested-book">
+            <h5 class="card-title">{{ item[1] }}</h5>
+            <a :href="'/' + item[0] + '/user_detail'" class="btn btn-link">
+              <h6>User: {{ item[0] }}</h6>
+            </a>
+            <p>Section: {{ item[2] }}</p>
+            <button @click="handleAction(item[3], item[0], 'grant')" class="btn btn-success">Grant</button>
+            <button @click="handleAction(item[3], item[0], 'cancel')" class="btn btn-danger">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h3><b>Can Revoke the Books</b></h3>
+      <div class="row">
+        <div v-for="item in k2" class="col-md-3 col-sm-6 mb-4">
+          <div class="book revoke-book">
+            <h5 class="card-title">{{ item[1] }}</h5>
+            <a :href="'/' + item[0] + '/user_detail'" class="btn btn-link">
+              <h6>User: {{ item[0] }}</h6>
+            </a>
+            <p>Section: {{ item[2] }}</p>
+            <form method="POST" action='/librarian_dashboard/status'>
+              <button @click.prevent="handleAction(item[3], item[0], 'revoke')" class="btn btn-success">Revoke</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endraw %}
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        k1: {{ k1|tojson }},
+        k2: {{ k2|tojson }}
+      },
+      methods: {
+        handleAction(value1, value2, action) {
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/librarian_dashboard/status';
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = action;
+          input.value = `${value1},${value2}`;
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

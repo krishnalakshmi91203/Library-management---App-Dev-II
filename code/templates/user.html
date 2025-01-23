@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background-image: url("/static/libr.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+    }
+    .login-container {
+      background-color: #ffffff;
+      border: 2px solid #007bff;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 800px; /* Adjusted width for horizontal layout */
+      margin: auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+    }
+    .login-content {
+      width: 100%;
+    }
+    .login-container h1 {
+      color: #007bff;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .btn-custom-primary {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 16px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn-custom-primary:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .btn-custom-success {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 16px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn-custom-success:hover {
+      background-color: #218838;
+      transform: scale(1.05);
+    }
+    .form-control {
+      border-radius: 50px;
+      border: 1px solid #ced4da;
+      box-shadow: none;
+      margin-bottom: 15px;
+    }
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+    }
+    .form-label {
+      font-weight: 600;
+    }
+    .login-footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .login-footer a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .login-footer a:hover {
+      text-decoration: underline;
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 20px; /* Space between fields */
+    }
+    .form-row .col {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+<div id="app" class="d-flex justify-content-center align-items-center min-vh-100">
+  <div class="login-container">
+    <div class="login-content">
+      <h1 class="text-center">User Login</h1>
+      <form @submit.prevent="submitForm" class="needs-validation" novalidate>
+        <div class="form-row">
+          <div class="col">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" id="username" class="form-control" v-model="username" placeholder="Enter username" required>
+            <div class="invalid-feedback" v-if="!username">Please fill out this field.</div>
+          </div>
+          <div class="col">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" id="password" class="form-control" v-model="password" placeholder="Enter password" required>
+            <div class="invalid-feedback" v-if="!password">Please fill out this field.</div>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <div class="d-flex justify-content-between gap-3">
+            <button type="submit" class="btn btn-custom-primary flex-fill">Submit</button>
+            <a href='/Registerform/new' class="btn btn-custom-success flex-fill">Register</a>
+          </div>
+          <div class="login-footer mt-3">
+            <a href="/">Go Back</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        username: '',
+        password: ''
+      };
+    },
+    methods: {
+      async submitForm() {
+        try {
+          const response = await fetch('/userlogin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              uname: this.username,
+              pwd: this.password,
+              userreq: 'das'
+            })
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.access_token) {
+              localStorage.setItem('access_token', result.access_token);
+              const tokenPayload = JSON.parse(atob(result.access_token.split('.')[1]));
+              console.log(tokenPayload); 
+              const role = tokenPayload.sub.role;
+              if (role === 'user') {
+                window.location.href = '/user_dashboard/' + this.username;
+              } else if (role === 'librarian') {
+                window.location.href = '/librarian_dashboard';
+              } else {
+                alert('Unknown role');
+              }
+            } else {
+              alert('Invalid credentials');
+            }
+          } else {
+            alert('Error: ' + response.statusText);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred');
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

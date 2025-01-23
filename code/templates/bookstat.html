@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card-header {
+      background-color: #137beb;
+      color: #fff;
+    }
+    .card-body {
+      background-color: #fff;
+      border-radius: .25rem;
+    }
+    .btn-primary {
+      background-color: #3a90ec;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #3a90ec;
+    }
+    .table thead th {
+      background-color: #3a90ec;
+      color: #fff;
+    }
+    .table tbody tr:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+    .table tbody tr:hover {
+      background-color: #e9ecef;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+  <div id="app" class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="container mt-3">
+      <div class="card shadow-sm">
+        <div class="card-header text-center">{% raw %}
+          <h3><b>{{ bookDetails[0] }}</b></h3>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <h5><b>BookID:</b> {{ bookId }}</h5>
+            <h5><b>SectionID:</b> {{ bookDetails[3] }}</h5>
+            <h5><b>Price:</b> ${{ bookDetails[1] }}</h5>
+            <h5><b>Current Rating:</b> {{ bookDetails[2] }}</h5>
+          </div>
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <i class="bi bi-file-earmark-check"></i> Granted to the User
+                </div>
+                <div class="card-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>BookID</th>
+                        <th>DueDate</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in grantedBooks" :key="item[0]">
+                        <td>{{ item[0] }}</td>
+                        <td>{{ item[1] }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <i class="bi bi-check-circle"></i> Completed by the User
+                </div>
+                <div class="card-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>BookID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in completedBooks" :key="item[0]">
+                        <td>{{ item[0] }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <i class="bi bi-hourglass-split"></i> Requested by the User
+                </div>
+                <div class="card-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>BookID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in requestedBooks" :key="item[0]">
+                        <td>{{ item[0] }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <a :href="'/' + bookDetails[3] + '/books'" class="btn btn-primary">Go Back</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endraw %}
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        bookId: '{{ a }}',
+        bookDetails: {{ k|tojson }},
+        grantedBooks: {{ k1|tojson }},
+        completedBooks: {{ k2|tojson }},
+        requestedBooks: {{ k3|tojson }}
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLlibrary</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8i1F73TlSL5Uw5+Uq6TZ5n0eD6DA/Dm1E9WOOr25AZtVMFkgjW8UZJ1I9a" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+<div id="app" class="position-absolute top-50 start-50 translate-middle">
+    <div class="container mt-3">
+      <h1 v-if="isNew"><b>Create Your New Profile</b></h1><br>
+      <h1 v-else><b>Edit Your Profile</b></h1><br>      
+        <form @submit.prevent="handleSubmit" class="was-validated">
+            <div class="mb-3 mt-3 text-center">
+                <label><h5>Name:</h5></label>
+                <input type="text" class="form-control" v-model="formData.name" placeholder="Enter full name" required>
+                <label><h5>Role:</h5></label>
+                <select class="form-control" v-model="formData.role">
+                    <option disabled value="">Select a role</option>
+                    <option value="user">User</option>
+                 <!--   <option value="librarian">Librarian</option>    -->
+                  </select>
+                <label><h5>E-Mail:</h5></label>
+                <input type="email" class="form-control" v-model="formData.email" placeholder="Enter e-mail" required>
+                <label><h5>Contact Number:</h5></label>
+                <input type="tel" class="form-control" v-model="formData.num" placeholder="Enter contact number" required>
+                <label><h5>Username:</h5></label>
+                <input type="text" class="form-control" v-model="formData.uname" placeholder="Enter username" required>
+                <label><h5>Password:</h5></label>
+                <input type="password" class="form-control" v-model="formData.pwd" placeholder="Enter password" required>
+            </div>
+            <div class="text-center">
+                <a :href="cancelLink" class="btn btn-danger">Cancel</a>&emsp;&emsp;
+                <button type="submit" class="btn btn-success" >Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            isNew: '{{ 'true' if aa == 'new' else 'false' }}' === 'true',
+            formData: {
+                name: '{{ k[0] if aa != "new" else "" }}',
+                role: '{{ k[1] if aa != "new" else "" }}',
+                email: '{{ k[5] if aa != "new" else "" }}',
+                num: '{{ k[4] if aa != "new" else "" }}',
+                uname: '{{ k[2] if aa != "new" else "" }}',
+                pwd: '{{ k[3] if aa != "new" else "" }}',
+            },
+            formAction: `/Registerform/{{ aa }}`,
+        },computed: {
+        cancelLink() {
+            return this.isNew ? `/userlogin` : `/user_dashboard/{{ aa }}`;
+        }
+    },
+        methods: {
+            handleSubmit() {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = this.formAction;
+                for (let key in this.formData) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = this.formData[key];
+                    form.appendChild(input);
+                }
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
