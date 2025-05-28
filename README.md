@@ -36,7 +36,7 @@
     <img src="https://github.com/user-attachments/assets/a5680c9c-e87d-4a22-a409-ba1fac9af8a2" width="48%">
 </div>
 
-- Librarians can create, update, and delete sections for categorizing e-books.
+- Librarians can search, create, update, and delete sections for categorizing e-books.
 - Ensures organized and accessible library content.
 
 ### E-Book Management
@@ -49,7 +49,7 @@
 </div>
 
 - CRUD operations for e-books, including editing details like title, author, content, and availability.
-- Helps librarians maintain an up-to-date digital collection.
+- Helps librarians can search e-books and maintain an up-to-date digital collection.
 
 ### Search and User Interaction
 
@@ -85,6 +85,12 @@
 - Books are displayed in descending order of their ratings, prioritizing highly-rated content for better user experience.
 
 ---
+## - 📽️ Demo Video: Features & Functionality
+
+[Watch the Demo Video](https://drive.google.com/file/d/1Nx8zZkuIDyMMH1DZNYfvvqUhmqmqTP7n/view?usp=drive_link)
+
+---
+
 ## Frameworks and Libraries Used
 - **SQLite**: For lightweight and easy-to-integrate data storage.
 - **Flask**: For API endpoints, server-side logic, and authentication.
@@ -119,7 +125,6 @@ The database is designed with tables representing:
 - **Sections**: Categorizes e-books for better organization.
 - **Books**: Contains details about e-books, including title, author, and rating.
 - **Transactions**: Tracks e-book issuance, return dates, and statuses.
-
 
 ---
 
