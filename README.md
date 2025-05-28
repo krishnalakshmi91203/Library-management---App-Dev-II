@@ -85,7 +85,7 @@
 - Books are displayed in descending order of their ratings, prioritizing highly-rated content for better user experience.
 
 ---
-## - 📽️ Demo Video: Features & Functionality
+## 📽️ Demo Video: Features & Functionality
 
 [Watch the Demo Video](https://drive.google.com/file/d/1Nx8zZkuIDyMMH1DZNYfvvqUhmqmqTP7n/view?usp=drive_link)
 
